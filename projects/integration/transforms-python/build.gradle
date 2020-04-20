@@ -1,0 +1,25 @@
+// DO NOT MODIFY THIS FILE
+buildscript {
+    repositories {
+        maven {
+            credentials {
+                username ''
+                password transformsBearerToken
+            }
+            authentication {
+                basic(BasicAuthentication)
+            }
+            url project.transformsMavenProxyRepoUri
+        }
+    }
+
+    dependencies {
+        classpath "com.palantir.transforms.python:lang-python-gradle-plugin:${transformsLangPythonPluginVersion}"
+    }
+}
+
+apply plugin: 'com.palantir.transforms.lang.python'
+apply plugin: 'com.palantir.transforms.lang.python-defaults'
+
+// Apply the testing plugin
+// apply plugin: 'com.palantir.transforms.lang.pytest-defaults'

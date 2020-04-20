@@ -1,0 +1,10 @@
+{
+  "parentTemplateId" : "transforms",
+  "childTemplatesByPath" : {
+    "transforms-java" : "java"
+  },
+  "parentTemplateVersion" : "4.6.1",
+  "childTemplateVersionsByPath" : {
+    "transforms-java" : "1.114.0"
+  }
+}

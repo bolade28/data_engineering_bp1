@@ -1,0 +1,76 @@
+# DO NOT MODIFY OR DELETE THIS FILE.
+#
+# ANY CHANGES MAY RESULT IN SERIOUS DAMAGE
+# TO THE TECHNICAL INFRASTRUCTURE AND LOSS OF DATA!
+#
+# ACCESS TO OR USE OF PALANTIR FOUNDRY IS SUBJECT
+# TO PALANTIR’S TECHNICAL SPECIFICATIONS AVAILABLE
+# IN THE DOCUMENTATION. THIS WARNING CONSTITUTES AN
+# ADDITION TO THOSE TECHNICAL SPECIFICATIONS AND
+# NON-COMPLIANCE MAY CONSTITUTE A VIOLATION OF
+# THE FOUNDRY LICENSE AGREEMENT.
+
+env:
+  transformsGradleDistributionUrl:
+    uri-role: gradle-distribution-5-4-1
+  ORG_GRADLE_PROJECT_transformsBuildUriV2:
+    uri-role: build2-api
+  ORG_GRADLE_PROJECT_transformsCompassUri:
+    uri-role: compass-api
+  ORG_GRADLE_PROJECT_condaInstallerUri:
+    uri-role: conda-installer
+  ORG_GRADLE_PROJECT_condaInstallerUriPy2:
+    uri-role: conda-installer2-py2
+  ORG_GRADLE_PROJECT_condaInstallerUriPy3:
+    uri-role: conda-installer2-py3
+  ORG_GRADLE_PROJECT_transformsCondaRepositoryProxyApiUri:
+    uri-role: conda-repository-proxy-api
+  ORG_GRADLE_PROJECT_transformsCondaRepositoryProxyPublicRepoUri:
+    uri-role: conda-repository-proxy-public
+  ORG_GRADLE_PROJECT_artifactsUri:
+    uri-role: foundry-artifacts-api
+  ORG_GRADLE_PROJECT_transformsCatalogUri:
+    uri-role: foundry-catalog-api
+  ORG_GRADLE_PROJECT_transformsSchemaUri:
+    uri-role: foundry-metadata-api
+  ORG_GRADLE_PROJECT_logReceiverUri:
+    uri-role: log-receiver-api
+  ORG_GRADLE_PROJECT_transformsMavenProxyRepoUri:
+    uri-role: maven-repository-proxy
+  ORG_GRADLE_PROJECT_transformsShrinkwrapServiceUri:
+    uri-role: shrinkwrap-service-api
+  ORG_GRADLE_PROJECT_sparkConfigurationServiceUri:
+    uri-role: spark-configuration-service-api
+  ORG_GRADLE_PROJECT_transformsStreamCatalogUri:
+    uri-role: stream-catalog-api
+  ORG_GRADLE_PROJECT_transformsUserCodeRepoUri:
+    uri-role: user-code-maven-repository-proxy
+
+required-job-token-capabilities:
+  - transforms
+
+jobs:
+  foundry-publish:
+    timeout: 20 minutes
+    steps:
+    - |
+      set -euo pipefail
+
+      [[ -n "${JAVA_HOME-}" && -d "$JAVA_HOME" ]] || {
+          echo "JAVA_HOME was not set or did not point to a valid directory."
+          exit 1
+      }
+      export JAVA_OPTS="-Xmx512m -Djavax.net.ssl.trustStore=${STEMMA_DEFAULT_TRUST_STORE_PATH} -Dfile.encoding=UTF8"
+      export ORG_GRADLE_PROJECT_transformsTrustStore="${STEMMA_DEFAULT_TRUST_STORE_PATH}"
+      export ORG_GRADLE_PROJECT_transformsBearerToken="${JOB_TOKEN}"
+      export ORG_GRADLE_PROJECT_transformsRepoRid="${STEMMA_REPO_RID}"
+      export GRADLE_OPTS="-Dgradle.wrapperUser='' -Dgradle.wrapperPassword=${JOB_TOKEN}"
+
+      if [ -z ${JEMMA_BRANCH+x} ]; then
+        echo "The JEMMA_BRANCH variable is unset. We cannot publish without a branch, so please make sure that \
+      we are on a branch. Tagging a transforms repository currently is not fully supported, so CI will fail."
+        exit 1
+      fi
+
+      # For more detailed output from CI checks, add "--info" to the end of the "./gradlew" command below.
+      ./gradlew --no-daemon --build-cache --stacktrace patch publish

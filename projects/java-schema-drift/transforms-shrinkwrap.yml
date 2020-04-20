@@ -1,0 +1,12 @@
+---
+mappings:
+- alias: "/BP/IST-IG-Commodity-Risk-Sandbox/Datasets/Ingestion/DL010-PNL_Detail"
+  modes:
+  - "READ"
+  path: "/BP/IST-IG-Commodity-Risk-Sandbox/Datasets/Ingestion/DL010-PNL_Detail"
+  rid: "ri.foundry.lava-catalog.dataset.c2d94f1c-b82d-4dc4-999a-36c1b516c212"
+- alias: "/BP/IST-IG-Commodity-Risk-Sandbox/Datasets/Ingestion/POC_schema_Drift/test_05_v2"
+  modes:
+  - "BUILD"
+  path: "/BP/IST-IG-Commodity-Risk-Sandbox/Datasets/Ingestion/POC_schema_Drift/test_05_v2"
+  rid: "ri.foundry.lava-catalog.dataset.69e8ae82-0edc-4e2b-965f-77c27260e1c3"
