@@ -1,0 +1,24 @@
+# If you need to modify the runtime requirements for your package,
+# update the 'requirements.run' section in this file
+
+package:
+  name: "{{environ['PACKAGE_NAME']}}"
+  version: "{{environ['PACKAGE_VERSION']}}"
+
+source:
+  path: ../src
+
+requirements:
+  build:
+    - python 3.6.*
+    - pandas
+    - setuptools
+
+  # Any extra packages required to run your package.
+  run:
+    - python 3.6.*
+    - pandas
+    - transforms {{environ.get('PYTHON_TRANSFORMS_VERSION', '')}}
+
+build:
+  script: python setup.py install --single-version-externally-managed --record=record.txt
